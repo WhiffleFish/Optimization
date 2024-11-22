@@ -1,6 +1,8 @@
 using JuMP
 using HiGHS
 using Ipopt
+using Printf
+
 
 v = [1.7, 6, 4, 1]
 c = [1, 2, 3, 1.5]
@@ -20,6 +22,13 @@ optimize!(model)
 value.(x)
 dot(value.(x), c)
 
+clipboard(join(round.(value.(x), sigdigits=3), "\\\\"))
+value(dot(x, v .- c))
+
+map(x) do x_i
+	@sprintf("%06.2f", value(x_i))
+end |> x -> join(x, "\\\\") |> clipboard
+
 ##
 model = Model(Ipopt.Optimizer)
 @variable(model, x[eachindex(v)] .≥ 0)
@@ -33,6 +42,12 @@ sqrt(sum(abs2, value.(x) .* sigma))
 value(profit)
 value.(x)
 
+value(dot(x, v .- c))
+
+map(x) do x_i
+	@sprintf("%06.2f", value(x_i))
+end |> x -> join(x, "\\\\") |> clipboard
+
 ##
 model = Model(Ipopt.Optimizer)
 @variable(model, x[eachindex(v)] .≥ 0)
@@ -45,3 +60,10 @@ dot(value.(x),c)
 0.5*value(profit) - sqrt(dot(value.(x),Sigma,value.(x)))
 value(profit)
 value.(x)
+
+clipboard(join(round.(value.(x), sigdigits=3), "\\\\"))
+value(dot(x, v .- c))
+
+map(x) do x_i
+	@sprintf("%06.2f", value(x_i))
+end |> x -> join(x, "\\\\") |> clipboard

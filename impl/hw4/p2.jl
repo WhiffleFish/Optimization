@@ -1,6 +1,6 @@
 using JuMP, HiGHS
 
-B = [
+filled = [
     (1,1,5),
     (2,1,6),
     (4,1,8),
@@ -41,17 +41,15 @@ B = [
     (9,9,9)
 ]
 
-sum(rand(1,2,3), dims=(3,))
-
 model = Model(HiGHS.Optimizer)
 @variable(model, X[1:9, 1:9, 1:9], Bin)
 @constraint(model, sum(X, dims=1) .== 1)
 @constraint(model, sum(X, dims=2) .== 1)
 @constraint(model, sum(X, dims=3) .== 1)
-for U ∈ (1,4,7), V ∈ (1,4,7)
-    @constraint(model, sum(X[U:U+2, V:V+2, :], dims=(1,2)) .== 1)
+for I ∈ (1,4,7), J ∈ (1,4,7)
+    @constraint(model, sum(X[I:I+2, J:J+2, :], dims=(1,2)) .== 1)
 end
-for (i,j,k) ∈ B
+for (i,j,k) ∈ filled
     @constraint(model, X[i,j,k] == 1)
 end
 optimize!(model)
@@ -62,6 +60,8 @@ for i ∈ 1:9, j ∈ 1:9
     m[i,j] = findfirst(isone, V[i,j,:])
 end
 
-m
+latex_str = mapreduce(*, eachrow(m)) do row
+    join(row, " & ") * " \\\\ \n"
+end
 
 mapreduce(join, *, eachrow(m))
