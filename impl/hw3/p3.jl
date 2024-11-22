@@ -1,4 +1,5 @@
 using Zygote
+using LinearAlgebra
 
 traj(u) = accumulate(+, map(uk -> 6sin(uk), u))    
 full_traj(u) = [0;traj(u)]
@@ -93,6 +94,8 @@ opt = NesterovMomentum(α=1e-7)
 x_hist_hist, f_hist_hist = penalty_sim(opt, zeros(10), k_max=100, max_iter=5000)
 plot(traj(last(x_hist_hist[100])))
 plot(last(x_hist_hist[100]))
+
+last(last(x_hist_hist))
 
 plot(f_hist_hist[100])
 plot(traj(last(x_hist_hist[100])))
