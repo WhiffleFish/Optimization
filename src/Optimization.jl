@@ -14,4 +14,6 @@ include(joinpath("order0", "order0.jl"))
 
 include(joinpath("order1", "order1.jl"))
 
+include(joinpath("order2", "order2.jl"))
+
 end # module Optimization
